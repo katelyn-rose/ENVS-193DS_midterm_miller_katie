@@ -1,0 +1,191 @@
+---
+title: "Midterm"
+author: "Katie Miller"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+require(broom)
+require(ggplot2)
+require(plyr)
+require(dplyr)
+require(dplyr)
+require(MASS)
+require(car)
+require(AER)
+require(ggpubr)
+require(AICcmodavg)
+```
+
+## Problem 1
+
+a.  Ho = the mean phosphorus content in the burned and unburned sites is not significantly different. Ha = there is a significant difference between mean phosphorus content in the soil of the burned and unburned sites.
+
+b.  t-test to determine if the mean of the two areas is significantly different.
+
+c.  To perform a successful student's t-test, we assume that the data sets are evenly distributed and have an equal variance.
+
+d.  if the data sets had an unequal variance we could perform a Welch's t-test.
+
+e.  Because the p-value is less than 0.05, we can reject the null hypothesis that there is no difference in phosphorus content between the burned and unburned sites. 
+
+f.  Ho = the mean phosphorus content of the soil before and after the fire is not significantly different. 
+Ha = the mean phosphorus content of the soil is unchanged before and after the fires. 
+
+g. I would preform a t-test to compare the mean phosphorus content of the soil before and after the fire in each survey site. 
+
+## Problem 2
+
+```{r}
+# reading in data, correct file paths
+roadcomp <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadcomp.csv", skip=1)
+sites <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadsite.csv")
+contig <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/contig.csv", colClasses = c(Site = "factor", type = "factor"))
+veg <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadveg.csv", skip=1, colClasses = c(mowed = "factor", flowers = "factor", seminatural = "factor", weed = "factor"))
+veg$lawn[is.na(veg$lawn)] <- 0
+veg$lawn <- as.factor(veg$lawn)
+fvisits <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/flower visits.csv")
+```
+
+```{r}
+roadcomp2 <- mutate(roadcomp, prop.pig.c = (c.vert.n.high.pigment+c.vert.n.low.pigment)/c.vert.n.flowers, prop.pig.c.hi = c.vert.n.high.pigment/c.vert.n.flowers, prop.pig.m = (m.fist.n.pigment.high+m.fist.n.pigment.low)/m.fist.n.flowers, prop.pig.mi = m.fist.inflor.pigment/m.fist.n.inflorescences)
+roadsite <- merge(roadcomp2, sites, by = "site")
+roadveg <- merge(roadsite, veg, by = c("site", "position"))
+road.c <- subset(roadsite, prop.pig.c != "NA")
+road.m <- subset(roadsite, prop.pig.m != "NA")
+```
+
+```{r}
+# t.test(prop.pig.c ~ position, paired = T, data = road.c)
+# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes > 0.5))
+# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes > 0))
+# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes == 0))
+# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes == 0.5))
+
+c.prop.sum.road <- ddply(subset(road.c, number.of.lanes > 0.5), .(position), summarize,
+                  mean = mean(prop.pig.c),
+                  sd = sd(prop.pig.c),
+                  se = sd(prop.pig.c)/sqrt(length(position)),
+                  n = length(position))
+c.prop.sum <- ddply(subset(road.c, number.of.lanes > 0), .(position), summarize,
+                  mean = mean(prop.pig.c),
+                  sd = sd(prop.pig.c),
+                  se = sd(prop.pig.c)/sqrt(length(position)))
+
+f1a <- ggplot(c.prop.sum) + 
+  geom_point(data = subset(road.c, number.of.lanes > 0), 
+             aes(x=position, 
+                 y = prop.pig.c, 
+                 shape = position,
+                 color = position), 
+             size = 3, alpha = 0.4, 
+             position = position_jitter(width = 0.2)) + 
+  geom_point(aes(x = position, 
+                 y = mean, 
+                 color = position, 
+                 shape = position), size = 7) + 
+  geom_errorbar(aes(ymin = mean-se, 
+                    ymax = mean+se, 
+                    x = position,
+                    color=position), width = 0.1, size = 1) + 
+  theme_bw() + 
+  theme(axis.text = element_text(colour = "black",size=rel(1.3)),
+        axis.title = element_text(size=rel(1.4), face = "bold"),
+        legend.position = "none", plot.title = 
+          element_text(size = rel(2), face = "bold", hjust = 0.5)) + 
+  labs(x="Position relative to road",
+       y="Proportion of flowers\nwith pigment")
+
+f.ga.cor <- ggplot(c.prop.sum) + 
+  geom_point(data = subset(road.c, number.of.lanes > 0), 
+             aes(x=position, 
+                 y = prop.pig.c, 
+                 shape = position, 
+                 color = position), 
+             size = 3, alpha = 0.4,
+             position = position_jitter(width = 0.2)) + 
+  geom_point(aes(x=position, y = mean, color=position, 
+                 shape = position), size = 7) + 
+  geom_errorbar(aes(ymin = mean-se, 
+                    ymax = mean + se, 
+                    x = position,
+                    color=position), 
+                width = 0.1, size = 1) + 
+  theme_bw() + 
+  theme(axis.text  =element_text(colour = "black",size=rel(1.9)),
+        axis.title = element_text(size=rel(2), face = "bold"),
+        legend.position = "none", 
+        plot.title = element_text(size = rel(2), 
+                                  face = "bold", hjust = 0.5)) +
+  labs(x="Position relative to road", 
+       y="Proportion of flowers\nwith pigment")
+
+c.prop.sum.path <- ddply(subset(road.c, number.of.lanes == 0),
+                         .(position), summarize,
+                  mean = mean(prop.pig.c),
+                  sd = sd(prop.pig.c),
+                  se = sd(prop.pig.c)/sqrt(length(position)))
+
+f1c <- ggplot(c.prop.sum.path) + 
+  geom_point(data = subset(road.c, number.of.lanes == 0),
+             aes(x=position, y = prop.pig.c, shape = position, 
+                 color = position), 
+             size = 3, alpha = 0.4, 
+             position = position_jitter(width = 0.2)) + 
+  geom_point(aes(x = position, 
+                 y = mean, 
+                 color = position, 
+                 shape = position), size = 7) +
+  geom_errorbar(aes(ymin = mean-se, 
+                    ymax = mean+se, 
+                    x = position, 
+                    color = position), width = 0.1, size = 1) + 
+  theme_bw() + 
+  theme(axis.text = element_text(colour = "black",size=rel(1.3)), 
+        axis.title = element_text(size=rel(1.4), face = "bold"), 
+        plot.title = element_text(size = rel(2), face = "bold", 
+                                  hjust = 0.5), 
+        legend.position = "none") + 
+  labs(x="Position relative to pedestrian path", 
+       y="Proportion of flowers\nwith pigment")
+
+c.prop.sum.bike <- ddply(subset(road.c, number.of.lanes == 0.5), .(position), summarize,
+                  mean = mean(prop.pig.c),
+                  sd = sd(prop.pig.c),
+                  se = sd(prop.pig.c)/sqrt(length(position)))
+
+f1b <- ggplot(c.prop.sum.bike) + 
+  geom_point(data = subset(road.c, number.of.lanes == 0.5),
+             aes(x=position, y = prop.pig.c, shape = position, 
+                 color = position), size = 3, alpha = 0.4, 
+             position = position_jitter(width = 0.2)) + 
+  geom_point(aes(x=position, y = mean, color=position, 
+                 shape = position), size = 7) + 
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, 
+                    color=position), width = 0.1, size = 1) + 
+  theme_bw() + 
+  theme(axis.text = element_text(colour = "black",size=rel(1.3)), 
+        axis.title = element_text(size=rel(1.4), face = "bold"), 
+        plot.title = element_text(size = rel(2), face = "bold",
+                                  hjust = 0.5), 
+        legend.position = "none") + 
+  labs(x = "Position relative to bike path", 
+       y = "Proportion of flowers\nwith pigment")
+
+#c.prop.sum2 <- ddply(subset(road.c), .(position, number.of.lanes), summarize,
+                #  mean = mean(prop.pig.c),
+               #   sd = sd(prop.pig.c),
+              #    se = sd(prop.pig.c)/sqrt(length(position)),
+             #     n.zero = length(prop.pig.c[prop.pig.c == 0]),
+           #       n = length(position),
+              #    prop.zero = n.zero/n)
+```
+
+
+## Problem 3
+
+## Problem 4
+
+

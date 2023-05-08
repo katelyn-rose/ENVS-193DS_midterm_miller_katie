@@ -1,0 +1,48 @@
+﻿site,latitude,longitude,pic?,number.of.lanes,speed,distance.m,car.start.time,number.of.cars,n.bikes,n.pedestrians,species
+Taylor at Peach,42.297937,-83.735113,Y,1,25,11.1,10:19,0,,,C
+Dixboro at Gardenview Dr,42.304927,-83.663574,Y,3,45,18.1,9:32,25,,,C
+Plymouth at Nixon,42.302539,-83.706983,Y,5,35,23,9:52,76,,,C
+Broadway at AA Reformed Church,42.296639,-83.723908,Y,2,25,13,8:58,2,,,C
+Maryfield dr,42.171122,-83.46100812,Y,1,25,8,17:27,0,,,CM
+W. Huron St. and Eigth St.,42.16545268,-83.45362052,Y,4,35,15.3,10:08,67,,,C
+North Main at FFN,42.295077,-83.746749,Y,4,45,22.8,9:12,88,,,C
+Whitmore Lk at Stein,42.327763,-83.74985,Y,2,55,17.5,9:40,11,,,C
+Dhu Varren at Food Gatherers,42.316502,-83.728149,Y,2,35,14.2,10:18,12,,,CM
+Wright at Kellogg,42.292543,-83.740102,Y,1,25,13.3,8:50,0,,,C
+Fuller Rd at Furstenburg Park,42.280925,-83.706634,Y,3,40,15.5,9:48,72,,,C
+Geddes at Gallup entrance,42.277116,-83.695731,Y,2,40,11.1,10:08,49,,,C
+Plymouth at water tower,42.303487,-83.698424,Y,5,45,36.1,8:51,87,,,CM
+Traver Rd,42.310983,-83.720244,Y,1,25,7.2,9:21,0,,,CM
+1213 Miller Ave,42.1715748,-83.454643,Y,2,35,12.3,9:55,35,,,CM
+Jackson Ave at Veteran's Park,42.1650894,-83.4636746,Y,3,35,15.6,10:31,60,,,CM
+1120 1120 Olden rd,42.295543,-83.761689,Y,1,25,11.34,9:21,0,,,CM
+Glen Ave,42.284603,-83.735663,Y,4,35,22.25,9:49,34,,,CM
+Fuller at VA,42.287492,-83.715568,Y,5,35,41.1,9:00,46,,,CM
+Huron Pkwy at Traverwood,42.308446,-83.713847,,3,35,12.8,8:53,4,,,CM
+Nixon at Green Things,42.327031,-83.707994,Y,2,55,15.5,9:19,15,,,CM
+E. Stadium at St. Francis Church,42.154027,-83.435278,Y,5,35,18.9,9:10,70,,,CM
+Platt at Carleton ,42.144706,-83.421195,Y,4,35,17,10:40,72,,,M
+Earhart at Gross,42.297442,-83.681505,Y,3,55,21.6,8:42,17,,,CM
+Huron Pkwy at E Huron R Dr,42.269711,-83.697494,Y,4,35,19.6,9:20,44,,,CM
+Seventh St. at Jefferson,42.163403,-83.453107,Y,2,35,13.4,16:37,48,,,CM
+W. liberty at Zion Lutheran,42.276361,-83.765894,Y,2,35,14.2,16:58,53,,,CM
+Parker Mill,42.273684,-83.668055,Y,0.5,10,3.27,16:35,0,0,0,CM
+Matthaei path,42.298729,-83.666388,Y,0.5,10,5.6,16:50,0,1,2,CM
+Washtenaw at Tuomy,42.26451,-83.717963,Y,4,45,15.9,17:12,87,,,M
+Washtenaw at church,42.2691,-83.723782,Y,4,40,14,16:55,65,,,CM
+Oswego St,42.27406,-83.723288,Y,1,25,10.5,17:28,0,,,M
+N Maple,42.290125,-83.780527,Y,3,35,17,16:35,103,,,M
+Spring St,42.283997,-83.752398,Y,1,25,11.8,16:55,8,,,M
+Riverside Park,42.28742,-83.739036,Y,0.5,10,3.86,8:54,0,4,2,C
+Fuller Park,42.286777,-83.727288,Y,0.5,10,4.1,9:14,0,5,1,C
+Wurster Park,42.271744,-83.754111,Y,0.5,,4.2,16:55,0,0,3,M
+Gallup Park,42.275647,-83.703116,Y,0.5,10,4.4,9:06,0,6,1,C
+Arb prarie,42.280311,-83.713164,Y,0,,3.2,9:31,0,0,1,C
+Leslie Park north meadow,42.310432,-83.72731,Y,0,,1.37,8:29,0,0,0,C
+Leslie trail W of Pontiac Tr,42.306745,-83.73719,Y,0,,1.42,8:57,0,0,0,C
+Leslie SNC meadow,42.300997,-83.729086,Y,0,,2.13,9:14,0,0,0,C
+CFP,42.256208,-83.70928,Y,0,,2.7,,0,0,0,C
+Maryfield sidewalk,42.283633,-83.76966,Y,0,,2.4,,0,0,0,C
+1211 Wright sidewalk,42.292546,-83.740218,Y,0,,1.7,,0,0,0,C
+E. Kingsley sidewalk,42.28488,-83.744337,Y,0,,2.1,,0,0,0,C
+Taylor sidewalk,42.297937,-83.735113,Y,0,,2.2,8:27,0,0,1,C

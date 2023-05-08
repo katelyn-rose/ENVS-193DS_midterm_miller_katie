@@ -1,0 +1,36 @@
+﻿Date,Site,type,Distance,Replicate,time.out,time.collected,c.vert.n.flowers,c.vert.n.high.pigment,c.vert.n.low.pigment,m.fist.n.flowers,m.fist.n.inflorescences,m.fist.n.pigment.high,m.fist.inflor.pigment.high,m.fist.n.pigment.low,m.fist.inflor.pigment.low,m.fist.inflor.pig
+2020-07-11,Matthaei,meadow,0,a,10:00,18:15,19,,,68,9,,,,,
+2020-07-11,Matthaei,meadow,5,a,10:00,18:15,35,11,22,242,18,28,5,10,3,5
+2020-07-11,Matthaei,meadow,15,a,10:00,18:15,26,0,2,320,36,0,0,4,3,3
+2020-07-11,Matthaei,meadow,25,a,10:00,18:15,17,0,2,391,47,0,0,4,4,4
+2020-07-11,Matthaei,meadow,35,a,10:00,18:15,13,0,0,317,26,0,0,1,1,1
+2020-07-11,Matthaei,lawn,0,b,10:00,18:15,20,,,,,,,,,
+2020-07-11,Matthaei,lawn,5,b,10:00,18:15,9,0,0,85,11,12,3,8,4,4
+2020-07-11,Matthaei,lawn,15,b,10:00,18:15,30,0,0,364,25,12,5,6,6,6
+2020-07-11,Matthaei,lawn,25,b,10:00,18:15,20,0,0,162,24,0,0,3,2,2
+2020-07-11,Matthaei,lawn,35,b,10:00,18:15,13,0,0,74,6,0,0,0,0,0
+2020-07-18,Leslie,lawn,0,c,9:30,17:30,19,,,406,27,,,,,
+2020-07-18,Leslie,lawn,5,c,9:30,17:30,7,1,1,181,16,21,11,54,10,11
+2020-07-18,Leslie,lawn,15,c,9:30,17:30,17,0,3,570,56,0,0,4,1,1
+2020-07-18,Leslie,lawn,25,c,9:30,17:30,15,0,0,318,33,0,0,10,4,4
+2020-07-18,Leslie,lawn,35,c,9:30,17:30,23,1,1,263,20,0,0,6,1,1
+2020-07-28,Leslie Park lawn,lawn,0,d,9:17,17:28,20,,,,,,,,,
+2020-07-28,Leslie Park lawn,lawn,5,d,9:17,17:28,7,0,1,,,,,,,
+2020-07-28,Leslie Park lawn,lawn,15,d,9:17,17:28,8,0,0,,,,,,,
+2020-07-28,Leslie Park lawn,lawn,25,d,9:17,17:28,6,0,0,,,,,,,
+2020-07-28,Leslie Park lawn,lawn,35,d,9:17,17:28,7,0,0,,,,,,,
+2020-07-28,Olson Park,meadow,0,e,9:03,17:13,12,,,,,,,,,
+2020-07-28,Olson Park,meadow,5,e,9:03,17:13,9,0,0,,,,,,,
+2020-07-28,Olson Park,meadow,15,e,9:03,17:13,14,0,0,,,,,,,
+2020-07-28,Olson Park,meadow,25,e,9:03,17:13,8,0,0,,,,,,,
+2020-07-28,Olson Park,meadow,35,e,9:03,17:13,11,0,0,,,,,,,
+2020-07-29,Maryfield Park,lawn,0,f,9:17,17:03,11,,,,,,,,,
+2020-07-29,Maryfield Park,lawn,5,f,9:17,17:03,12,0,0,,,,,,,
+2020-07-29,Maryfield Park,lawn,15,f,9:17,17:03,14,0,0,,,,,,,
+2020-07-29,Maryfield Park,lawn,25,f,9:17,17:03,9,0,0,,,,,,,
+2020-07-29,Maryfield Park,lawn,35,f,9:17,17:03,7,0,0,,,,,,,
+2020-07-30,Kuebler-Langford,meadow,0,g,9:12,17:28,19,,,,,,,,,
+2020-07-30,Kuebler-Langford,meadow,5,g,9:12,17:28,8,7,1,,,,,,,
+2020-07-30,Kuebler-Langford,meadow,15,g,9:12,17:28,11,0,1,,,,,,,
+2020-07-30,Kuebler-Langford,meadow,25,g,9:12,17:28,12,4,6,,,,,,,
+2020-07-30,Kuebler-Langford,meadow,35,g,9:12,17:28,8,0,0,,,,,,,
