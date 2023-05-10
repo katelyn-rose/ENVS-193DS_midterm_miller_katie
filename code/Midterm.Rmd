@@ -17,6 +17,8 @@ require(car)
 require(AER)
 require(ggpubr)
 require(AICcmodavg)
+library(tidyverse)
+library(here)
 ```
 
 ## Problem 1
@@ -50,7 +52,9 @@ fvisits <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/flower visits.cs
 ```
 
 ```{r}
-roadcomp2 <- mutate(roadcomp, prop.pig.c = (c.vert.n.high.pigment+c.vert.n.low.pigment)/c.vert.n.flowers, prop.pig.c.hi = c.vert.n.high.pigment/c.vert.n.flowers, prop.pig.m = (m.fist.n.pigment.high+m.fist.n.pigment.low)/m.fist.n.flowers, prop.pig.mi = m.fist.inflor.pigment/m.fist.n.inflorescences)
+roadcomp2 <- mutate(roadcomp, prop.pig.c = (c.vert.n.high.pigment+c.vert.n.low.pigment)/c.vert.n.flowers,
+                    prop.pig.c.hi = c.vert.n.high.pigment/c.vert.n.flowers, 
+                    prop.pig.m = (m.fist.n.pigment.high+m.fist.n.pigment.low)/m.fist.n.flowers, prop.pig.mi = m.fist.inflor.pigment/m.fist.n.inflorescences)
 roadsite <- merge(roadcomp2, sites, by = "site")
 roadveg <- merge(roadsite, veg, by = c("site", "position"))
 road.c <- subset(roadsite, prop.pig.c != "NA")
@@ -95,8 +99,8 @@ f1a <- ggplot(c.prop.sum) +
         axis.title = element_text(size=rel(1.4), face = "bold"),
         legend.position = "none", plot.title = 
           element_text(size = rel(2), face = "bold", hjust = 0.5)) + 
-  labs(x="Position relative to road",
-       y="Proportion of flowers\nwith pigment")
+  labs(x= NULL,
+       y=NULL)
 
 f.ga.cor <- ggplot(c.prop.sum) + 
   geom_point(data = subset(road.c, number.of.lanes > 0), 
@@ -119,8 +123,8 @@ f.ga.cor <- ggplot(c.prop.sum) +
         legend.position = "none", 
         plot.title = element_text(size = rel(2), 
                                   face = "bold", hjust = 0.5)) +
-  labs(x="Position relative to road", 
-       y="Proportion of flowers\nwith pigment")
+  labs(x= NULL, 
+       y= NULL)
 
 c.prop.sum.path <- ddply(subset(road.c, number.of.lanes == 0),
                          .(position), summarize,
@@ -148,8 +152,8 @@ f1c <- ggplot(c.prop.sum.path) +
         plot.title = element_text(size = rel(2), face = "bold", 
                                   hjust = 0.5), 
         legend.position = "none") + 
-  labs(x="Position relative to pedestrian path", 
-       y="Proportion of flowers\nwith pigment")
+  labs(x="Position relative\nto pedestrian path", 
+       y=NULL)
 
 c.prop.sum.bike <- ddply(subset(road.c, number.of.lanes == 0.5), .(position), summarize,
                   mean = mean(prop.pig.c),
@@ -171,21 +175,126 @@ f1b <- ggplot(c.prop.sum.bike) +
         plot.title = element_text(size = rel(2), face = "bold",
                                   hjust = 0.5), 
         legend.position = "none") + 
-  labs(x = "Position relative to bike path", 
-       y = "Proportion of flowers\nwith pigment")
+  labs(x = NULL, 
+       y = NULL)
 
-#c.prop.sum2 <- ddply(subset(road.c), .(position, number.of.lanes), summarize,
-                #  mean = mean(prop.pig.c),
-               #   sd = sd(prop.pig.c),
-              #    se = sd(prop.pig.c)/sqrt(length(position)),
-             #     n.zero = length(prop.pig.c[prop.pig.c == 0]),
-           #       n = length(position),
-              #    prop.zero = n.zero/n)
+c.prop.sum2 <- ddply(subset(road.c), .(position, number.of.lanes), summarize,
+                  mean = mean(prop.pig.c),
+                  sd = sd(prop.pig.c),
+                  se = sd(prop.pig.c)/sqrt(length(position)),
+                  n.zero = length(prop.pig.c[prop.pig.c == 0]),
+                  n = length(position),
+                  prop.zero = n.zero/n)
+
 ```
+
+```{r}
+m.prop.sum <- ddply(subset(road.m, number.of.lanes > 0.5), .(position), summarize,
+                  mean = mean(prop.pig.m),
+                  sd = sd(prop.pig.m),
+                  se = sd(prop.pig.m)/sqrt(length(position)))
+mi.prop.sum <- ddply(subset(road.m, number.of.lanes > 0.5), .(position), summarize,
+                  mean = mean(prop.pig.mi),
+                  sd = sd(prop.pig.mi),
+                  se = sd(prop.pig.mi)/sqrt(length(position)))
+f1d <- ggplot(mi.prop.sum) + geom_point(data = subset(road.m, number.of.lanes > 0), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.2)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 7) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1.3)), axis.title = element_text(size=rel(1), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + labs(x="Position relative to road", y="Proportion of flowers\nwith pigment")
+
+f.ga.mon <- ggplot(mi.prop.sum) + geom_point(data = subset(road.m, number.of.lanes > 0), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.2)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 7) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1.9)), axis.title = element_text(size=rel(2), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + 
+  labs(x="Position relative\nto road", 
+       y="Proportion of flowers with pigment")
+
+m.prop.sum.bike <- ddply(subset(road.m, number.of.lanes == 0.5), .(position), summarize,
+                  mean = mean(prop.pig.m),
+                  sd = sd(prop.pig.m),
+                  se = sd(prop.pig.m)/sqrt(length(position)))
+mi.prop.sum.bike <- ddply(subset(road.m, number.of.lanes == 0.5), .(position), summarize,
+                  mean = mean(prop.pig.mi),
+                  sd = sd(prop.pig.mi),
+                  se = sd(prop.pig.mi)/sqrt(length(position)))
+f1e <- ggplot(mi.prop.sum.bike) + geom_point(data = subset(road.m, number.of.lanes == 0.5), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.4)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 7) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1.3)), axis.title = element_text(size=rel(1.4), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + 
+  labs(x="Position relative\nto bike path", 
+       y= NULL)
+
+m.prop.sum2 <- ddply(road.m, .(position, number.of.lanes), summarize,
+                  mean = mean(prop.pig.mi),
+                  sd = sd(prop.pig.mi),
+                  se = sd(prop.pig.mi)/sqrt(length(position)),
+                  n.zero = length(prop.pig.mi[prop.pig.mi == 0]),
+                  n = length(position),
+                  prop.zero = n.zero/n)
+```
+
+```{r}
+ggarrange(f1a, f1b, f1c, f1d, f1e)
+```
+
 
 
 ## Problem 3
 
+a.
+
+```{r}
+coyotes <- read.csv(here("data",
+                         "sev220_coyotescatsurvey_20150618.csv"),
+                    na = c(".", ".'"))
+```
+
+
+```{r}
+coyotes_summary <- coyotes %>%
+  mutate(Habitat_type = case_when(Habitat_type == "G" ~ "grassland",
+                                  Habitat_type == "S" ~ "shrubland"))
+```
+
+```{r}
+coyotes_median <- coyotes_summary %>% 
+  group_by(Habitat_type) %>% 
+  summarize(median_l = median(Length, na.rm = TRUE))
+```
+
+```{r}
+ggplot(data = coyotes_median, aes(x = Habitat_type, 
+                                  y = median_l, 
+                                  color = Habitat_type, 
+                                  shape = Habitat_type)) +
+  geom_point(size = 3) +
+  geom_jitter(data = coyotes_summary, aes(x = Habitat_type, y = Length),
+              alpha = 0.3) +
+  labs(x = "Habitat Type", y = "Median Scat Length", title = "Median length of coyote scat, grassland vs. shrubland") +
+  theme_classic() +
+  theme(legend.position = "none",
+        text = element_text(family = "Times New Roman"))
+
+```
+
+b. 
+```{r}
+library(naniar)
+
+gg_miss_var(coyotes)
+```
+
+c.
+
+
 ## Problem 4
 
+```{r}
+library(lterdatasampler)
+icecover <- ntl_icecover
+```
+a.
+```{r}
+# ugly plot
+ggplot(data = icecover, aes(x = year, y = ice_duration)) +
+  geom_jitter(na.rm = TRUE) +
+  theme_bw()
+
+```
+
+b.
+```{r}
+# pretty plot
+```
 
