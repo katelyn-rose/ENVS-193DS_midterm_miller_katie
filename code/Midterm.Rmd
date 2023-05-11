@@ -19,6 +19,8 @@ require(ggpubr)
 require(AICcmodavg)
 library(tidyverse)
 library(here)
+library(NatParksPalettes)
+library(lterdatasampler)
 ```
 
 ## Problem 1
@@ -40,6 +42,13 @@ g. I would preform a t-test to compare the mean phosphorus content of the soil b
 
 ## Problem 2
 
+
+a. Roads may hinder pollinator movement and limit pollination of plants across and along roads. 
+In this study, a fluorescent pigment is used as an analogue for pollen to track the visitation of flowers by pollinators.
+A II
+Habitat corridors could help pollinators cross roads and bike paths to reach flowers. Promoting alternative methods of transportation and reducing the number of cars on the road could also reduce pollinator deaths by collision and allow for safer road crossings.
+
+b.
 ```{r}
 # reading in data, correct file paths
 roadcomp <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadcomp.csv", skip=1)
@@ -52,33 +61,28 @@ fvisits <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/flower visits.cs
 ```
 
 ```{r}
-roadcomp2 <- mutate(roadcomp, prop.pig.c = (c.vert.n.high.pigment+c.vert.n.low.pigment)/c.vert.n.flowers,
+roadcomp2 <- mutate(roadcomp, prop.pig.c =
+                  (c.vert.n.high.pigment + c.vert.n.low.pigment)/c.vert.n.flowers,
                     prop.pig.c.hi = c.vert.n.high.pigment/c.vert.n.flowers, 
-                    prop.pig.m = (m.fist.n.pigment.high+m.fist.n.pigment.low)/m.fist.n.flowers, prop.pig.mi = m.fist.inflor.pigment/m.fist.n.inflorescences)
+                    prop.pig.m = (m.fist.n.pigment.high + m.fist.n.pigment.low)/m.fist.n.flowers,
+                  prop.pig.mi = m.fist.inflor.pigment/m.fist.n.inflorescences)
 roadsite <- merge(roadcomp2, sites, by = "site")
-roadveg <- merge(roadsite, veg, by = c("site", "position"))
 road.c <- subset(roadsite, prop.pig.c != "NA")
 road.m <- subset(roadsite, prop.pig.m != "NA")
 ```
 
 ```{r}
-# t.test(prop.pig.c ~ position, paired = T, data = road.c)
-# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes > 0.5))
-# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes > 0))
-# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes == 0))
-# t.test(prop.pig.c ~ position, paired = T, data = subset(road.c, number.of.lanes == 0.5))
+# Creating the graphs a b and c
 
-c.prop.sum.road <- ddply(subset(road.c, number.of.lanes > 0.5), .(position), summarize,
-                  mean = mean(prop.pig.c),
-                  sd = sd(prop.pig.c),
-                  se = sd(prop.pig.c)/sqrt(length(position)),
-                  n = length(position))
+# calculating mean, standard deviation, and standard error for figure 1a
 c.prop.sum <- ddply(subset(road.c, number.of.lanes > 0), .(position), summarize,
                   mean = mean(prop.pig.c),
                   sd = sd(prop.pig.c),
                   se = sd(prop.pig.c)/sqrt(length(position)))
 
+# creating the graph for figure 1a 
 f1a <- ggplot(c.prop.sum) + 
+  # Plotting underlying data
   geom_point(data = subset(road.c, number.of.lanes > 0), 
              aes(x=position, 
                  y = prop.pig.c, 
@@ -86,148 +90,137 @@ f1a <- ggplot(c.prop.sum) +
                  color = position), 
              size = 3, alpha = 0.4, 
              position = position_jitter(width = 0.2)) + 
+  # Plotting the mean point
   geom_point(aes(x = position, 
                  y = mean, 
                  color = position, 
-                 shape = position), size = 7) + 
+                 # changed point size to 5 to better resemble figure 1
+                 shape = position), size = 5) + 
+  # Creating error bars for mean
   geom_errorbar(aes(ymin = mean-se, 
                     ymax = mean+se, 
                     x = position,
                     color=position), width = 0.1, size = 1) + 
+  # Theme and label aesthetics 
   theme_bw() + 
-  theme(axis.text = element_text(colour = "black",size=rel(1.3)),
-        axis.title = element_text(size=rel(1.4), face = "bold"),
-        legend.position = "none", plot.title = 
-          element_text(size = rel(2), face = "bold", hjust = 0.5)) + 
-  labs(x= NULL,
-       y=NULL)
+  # Changed y axis text to size 1 to better resemble the figure
+  theme(axis.text = element_text(colour = "black",size=rel(1)),
+        # removed the "across" and "along" labels from x axis
+        axis.text.x = element_blank(),
+        legend.position = "none") + 
+  labs(x = NULL,
+       y = NULL)
 
-f.ga.cor <- ggplot(c.prop.sum) + 
-  geom_point(data = subset(road.c, number.of.lanes > 0), 
-             aes(x=position, 
-                 y = prop.pig.c, 
-                 shape = position, 
-                 color = position), 
-             size = 3, alpha = 0.4,
+# calculating mean, standard deviation, and standard error for figure 1b
+c.prop.sum.bike <- ddply(subset(road.c, number.of.lanes == 0.5), .(position), summarize,
+                  mean = mean(prop.pig.c),
+                  sd = sd(prop.pig.c),
+                  se = sd(prop.pig.c)/sqrt(length(position)))
+
+# creating the graph for figure 1b
+f1b <- ggplot(c.prop.sum.bike) + 
+  # Plotting underlying data
+  geom_point(data = subset(road.c, number.of.lanes == 0.5),
+             aes(x = position, y = prop.pig.c, shape = position, 
+                 color = position), size = 3, alpha = 0.4, 
              position = position_jitter(width = 0.2)) + 
-  geom_point(aes(x=position, y = mean, color=position, 
-                 shape = position), size = 7) + 
-  geom_errorbar(aes(ymin = mean-se, 
-                    ymax = mean + se, 
-                    x = position,
-                    color=position), 
-                width = 0.1, size = 1) + 
+  # Plotting the mean point
+  geom_point(aes(x=position, y = mean, color = position,
+                 # changed point size to 5 to better resemble figure 1
+                 shape = position), size = 5) + 
+  # Creating error bars for mean
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, x = position, 
+                    color = position), width = 0.1, size = 1) + 
+  # Theme and label aesthetics 
   theme_bw() + 
-  theme(axis.text  =element_text(colour = "black",size=rel(1.9)),
-        axis.title = element_text(size=rel(2), face = "bold"),
-        legend.position = "none", 
-        plot.title = element_text(size = rel(2), 
-                                  face = "bold", hjust = 0.5)) +
-  labs(x= NULL, 
-       y= NULL)
+  # Changed y axis text to size 1 to better resemble the figure
+  theme(axis.text = element_text(colour = "black",size=rel(1)),
+        # removed the "across" and "along" labels from x axis
+        axis.text.x = element_blank(),
+        legend.position = "none") + 
+  labs(x = NULL,
+       y = NULL)
 
+
+# calculating mean, standard deviation, and standard error for figure 1c
 c.prop.sum.path <- ddply(subset(road.c, number.of.lanes == 0),
                          .(position), summarize,
                   mean = mean(prop.pig.c),
                   sd = sd(prop.pig.c),
                   se = sd(prop.pig.c)/sqrt(length(position)))
 
+# creating the graph for figure 1c
 f1c <- ggplot(c.prop.sum.path) + 
+  # Plotting underlying data
   geom_point(data = subset(road.c, number.of.lanes == 0),
              aes(x=position, y = prop.pig.c, shape = position, 
                  color = position), 
              size = 3, alpha = 0.4, 
              position = position_jitter(width = 0.2)) + 
-  geom_point(aes(x = position, 
-                 y = mean, 
-                 color = position, 
-                 shape = position), size = 7) +
+  # Plotting the mean point
+  geom_point(aes(x = position, y = mean,  color = position, 
+                 # changed point size to 5 to better resemble figure 1
+                 shape = position), size = 5) +
+  # Creating error bars for mean
   geom_errorbar(aes(ymin = mean-se, 
                     ymax = mean+se, 
                     x = position, 
                     color = position), width = 0.1, size = 1) + 
+  # Theme and label aesthetics 
   theme_bw() + 
-  theme(axis.text = element_text(colour = "black",size=rel(1.3)), 
+  # Changed y axis text to size 1 to better resemble the figure
+  theme(axis.text = element_text(colour = "black",size=rel(1)), 
         axis.title = element_text(size=rel(1.4), face = "bold"), 
-        plot.title = element_text(size = rel(2), face = "bold", 
+        plot.title = element_text(size = rel(0.5), face = "bold", 
                                   hjust = 0.5), 
         legend.position = "none") + 
-  labs(x="Position relative\nto pedestrian path", 
-       y=NULL)
-
-c.prop.sum.bike <- ddply(subset(road.c, number.of.lanes == 0.5), .(position), summarize,
-                  mean = mean(prop.pig.c),
-                  sd = sd(prop.pig.c),
-                  se = sd(prop.pig.c)/sqrt(length(position)))
-
-f1b <- ggplot(c.prop.sum.bike) + 
-  geom_point(data = subset(road.c, number.of.lanes == 0.5),
-             aes(x=position, y = prop.pig.c, shape = position, 
-                 color = position), size = 3, alpha = 0.4, 
-             position = position_jitter(width = 0.2)) + 
-  geom_point(aes(x=position, y = mean, color=position, 
-                 shape = position), size = 7) + 
-  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, 
-                    color=position), width = 0.1, size = 1) + 
-  theme_bw() + 
-  theme(axis.text = element_text(colour = "black",size=rel(1.3)), 
-        axis.title = element_text(size=rel(1.4), face = "bold"), 
-        plot.title = element_text(size = rel(2), face = "bold",
-                                  hjust = 0.5), 
-        legend.position = "none") + 
-  labs(x = NULL, 
+  labs(x = "Position relative\nto pedestrian path", 
        y = NULL)
-
-c.prop.sum2 <- ddply(subset(road.c), .(position, number.of.lanes), summarize,
-                  mean = mean(prop.pig.c),
-                  sd = sd(prop.pig.c),
-                  se = sd(prop.pig.c)/sqrt(length(position)),
-                  n.zero = length(prop.pig.c[prop.pig.c == 0]),
-                  n = length(position),
-                  prop.zero = n.zero/n)
 
 ```
 
 ```{r}
-m.prop.sum <- ddply(subset(road.m, number.of.lanes > 0.5), .(position), summarize,
-                  mean = mean(prop.pig.m),
-                  sd = sd(prop.pig.m),
-                  se = sd(prop.pig.m)/sqrt(length(position)))
+# Creating graphs d and e
+
+
 mi.prop.sum <- ddply(subset(road.m, number.of.lanes > 0.5), .(position), summarize,
                   mean = mean(prop.pig.mi),
                   sd = sd(prop.pig.mi),
                   se = sd(prop.pig.mi)/sqrt(length(position)))
-f1d <- ggplot(mi.prop.sum) + geom_point(data = subset(road.m, number.of.lanes > 0), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.2)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 7) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1.3)), axis.title = element_text(size=rel(1), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + labs(x="Position relative to road", y="Proportion of flowers\nwith pigment")
 
-f.ga.mon <- ggplot(mi.prop.sum) + geom_point(data = subset(road.m, number.of.lanes > 0), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.2)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 7) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1.9)), axis.title = element_text(size=rel(2), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + 
-  labs(x="Position relative\nto road", 
-       y="Proportion of flowers with pigment")
+f1d <- ggplot(mi.prop.sum) + 
+  geom_point(data = subset(road.m, number.of.lanes > 0), 
+             aes(x=position, y = prop.pig.mi, shape = position, 
+                 color = position), 
+             size = 3, alpha = 0.4, position =  position_jitter(width = 0.2)) +
+  geom_point(aes(x=position, y = mean, color=position, shape = position), size = 5) + 
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), 
+                width = 0.1, size = 1) + 
+  theme_bw() + 
+  # change size to 1
+  theme(axis.text = element_text(colour = "black",size=rel(1)), axis.title = element_text(size=rel(1), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + labs(x="Position relative to road", y= NULL)
 
-m.prop.sum.bike <- ddply(subset(road.m, number.of.lanes == 0.5), .(position), summarize,
-                  mean = mean(prop.pig.m),
-                  sd = sd(prop.pig.m),
-                  se = sd(prop.pig.m)/sqrt(length(position)))
+
 mi.prop.sum.bike <- ddply(subset(road.m, number.of.lanes == 0.5), .(position), summarize,
                   mean = mean(prop.pig.mi),
                   sd = sd(prop.pig.mi),
                   se = sd(prop.pig.mi)/sqrt(length(position)))
-f1e <- ggplot(mi.prop.sum.bike) + geom_point(data = subset(road.m, number.of.lanes == 0.5), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.4)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 7) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1.3)), axis.title = element_text(size=rel(1.4), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + 
-  labs(x="Position relative\nto bike path", 
+f1e <- ggplot(mi.prop.sum.bike) + geom_point(data = subset(road.m, number.of.lanes == 0.5), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.4)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 5) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1)), axis.title = element_text(size=rel(1), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + 
+  labs(x= "Position relative\nto bike path", 
        y= NULL)
 
-m.prop.sum2 <- ddply(road.m, .(position, number.of.lanes), summarize,
-                  mean = mean(prop.pig.mi),
-                  sd = sd(prop.pig.mi),
-                  se = sd(prop.pig.mi)/sqrt(length(position)),
-                  n.zero = length(prop.pig.mi[prop.pig.mi == 0]),
-                  n = length(position),
-                  prop.zero = n.zero/n)
 ```
 
 ```{r}
-ggarrange(f1a, f1b, f1c, f1d, f1e)
+# arranging the plots into a single figure
+figure_1 <- ggarrange(f1a, f1b, f1c, f1d, f1e)
 ```
 
+```{r}
+# Adding in vertical y axis label
+annotate_figure(figure_1, left = text_grob("Proportion of flowers with pigment", color = "black", rot = 90))
+
+```
 
 
 ## Problem 3
@@ -281,20 +274,46 @@ c.
 ## Problem 4
 
 ```{r}
-library(lterdatasampler)
 icecover <- ntl_icecover
 ```
-a.
+
 ```{r}
 # ugly plot
-ggplot(data = icecover, aes(x = year, y = ice_duration)) +
-  geom_jitter(na.rm = TRUE) +
-  theme_bw()
+plot_1 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
+  geom_jitter(na.rm = TRUE, ) +
+  labs(title = "Plot 1")
+  theme_bw() +
+  theme(axis.text.y = element_text(colour = "black",size = 1),
+        axis.title.x = element_text(colour = "black",size =  1),
+        plot.background = element_blank())
+                                   
+    
+  
+ #  axis.title.x = "year",
+    #    axis.title.y = "ice duration",
+    #    plot.title = "graph 1",
+     #   plot.title.position = 0.5,
+     #   color = "black",
+      
+
+plot_1
 
 ```
 
 b.
 ```{r}
 # pretty plot
+ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
+  geom_jitter(na.rm = TRUE) +
+  theme_minimal() +
+  scale_color_manual(values = natparks.pals("LakeNakuru", 2)) +
+  labs(y = "Ice duration (days)", x = "Year",
+       title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019") +
+  theme(legend.title = element_blank(),
+        axis.title.x = element_text(colour = "black", size = 9),
+        axis.title.y = element_text(colour = "black", size = 9),
+        plot.title = element_text(size =  10))
+
+
 ```
 
