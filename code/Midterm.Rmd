@@ -40,8 +40,7 @@ c. To perform a successful student's t-test, we assume that the data sets are ev
 
 d. If the data sets had an unequal variance we could perform a Welch's t-test.
 
-e. The null hypothesis was that there is no difference in phosphorus content between the burned and unburned sites. 34 soil samples were collected and there was found to be a significant difference in phosphorus content between burned and unburned sites (two-sample
-two-tailed t-test, t(66) = 2.5, ⍺ = 0.05, p = 0.014)
+e. The null hypothesis states that there is no difference in phosphorus content between the burned and unburned sites. 34 soil samples were collected and there was found to be a significant difference in phosphorus content between burned and unburned sites, therefore the null hypothesis was rejected (two-sample two-tailed t-test, t(66) = 2.5, ⍺ = 0.05, p = 0.014)
 
 f. Ho = the mean phosphorus content in the soil is equal before and after the fire.
 Ha = there is a difference in soil phosphorous content before and after the fire.
@@ -62,10 +61,8 @@ b.
 sites <- read.csv(here("data", "roadsite.csv"))
 fvisits <- read.csv(here("data", "flower visits.csv"))
 roadcomp <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadcomp.csv", skip = 1)
-#contig <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/contig.csv", colClasses = c(Site = "factor", type = "factor"))
 veg <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadveg.csv",
-                skip=1, colClasses = c(#mowed = "factor",
-                                       flowers = "factor",
+                skip=1, colClasses = c(flowers = "factor",
                                        seminatural = "factor", 
                                        weed = "factor"))
 veg$lawn[is.na(veg$lawn)] <- 0
@@ -414,7 +411,7 @@ b.
 plot_2 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
   geom_jitter(na.rm = TRUE) +
   # adding a fit line to show decrease over time
-  geom_smooth(method = "lm", se = FALSE, linewidth = 0.7, na.rm = TRUE) +
+  geom_smooth(formula = 'y ~ x', method = "lm", se = FALSE, linewidth = 0.7, na.rm = TRUE) +
   # theme and color
   theme_minimal() +
   theme(legend.title = element_blank(),
