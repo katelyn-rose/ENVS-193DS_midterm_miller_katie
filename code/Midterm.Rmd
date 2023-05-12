@@ -29,12 +29,12 @@ library(lterdatasampler)
 
 a.  Biological: 
 Ho = the phosphorus contents in the soils at the burned and unburned sites are equal. 
-Ha = the soil of the burned and unburned sites do not have the same phosphorus content.
+Ha = the soils in the burned and unburned sites do not have the same phosphorus content.
 Statistical:
 Ho = there is no significant difference in the mean phosphorus between the data sets.
 Ha = there is a significant difference in the mean phosphorus between the data sets.
 
-b. A t-test can be used to determine if the mean of the two areas is significantly different.
+b.	A t-test can be used to determine if the mean phosphorus content is significantly different between the two areas.
 
 c. To perform a successful student's t-test, we assume that the data sets are evenly distributed and have an equal variance.
 
@@ -45,13 +45,13 @@ e. The null hypothesis states that there is no difference in phosphorus content 
 f. Ho = the mean phosphorus content in the soil is equal before and after the fire.
 Ha = there is a difference in soil phosphorous content before and after the fire.
 
-g. I would preform a t-test to compare the mean phosphorus content of the soil before and after the fire in each survey site in order to determine if there is a significant difference in the means. 
+g.	I would perform a two-sample t-test to compare the mean phosphorus content of the soil before and after the fire in each survey site in order to determine if there is a significant difference in the means.
 
 ## Problem 2
 
 a. Roads may hinder pollinator movement and limit pollination of plants across and along roads. 
 In this study, a fluorescent pigment is used as an analogue for pollen to track the visitation of flowers by pollinators.
-Generally, flowers across a road or bike path are less likely to be visited by pollinators than flowers across a road or bike path. The pedestrian path seemed to have little effect on the rate of pollination.
+Generally, flowers across a road or bike path are less likely to be visited by pollinators than flowers along a road or bike path. The pedestrian path seemed to have little effect on the rate of pollination.
 Habitat corridors could help pollinators cross roads and bike paths to reach flowers. Promoting alternative methods of transportation and reducing the number of cars on the road could also reduce pollinator deaths by collision and allow for safer road crossings.
 
 b.
@@ -417,10 +417,12 @@ plot_2 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid
   theme(legend.title = element_blank(),
         axis.title.x = element_text(colour = "black", size = 9),
         axis.title.y = element_text(colour = "black", size = 9),
-        plot.title = element_text(size =  10)) +
+        plot.title = element_text(size =  10),
+        plot.caption.position = "panel") +
   scale_color_manual(values = natparks.pals("LakeNakuru", 2)) +
   labs(y = "Ice duration (days)", x = "Year",
-       title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019") 
+       title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019",
+       caption = "The duration of ice cover (in days) at Lakes Mendota and\nMonona steadily decreased between the years 1851 and 2019") 
 
 plot_2
 ```
