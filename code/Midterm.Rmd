@@ -420,6 +420,7 @@ plot_2 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid
         plot.title = element_text(size =  10),
         plot.caption.position = "panel") +
   scale_color_manual(values = natparks.pals("LakeNakuru", 2)) +
+  # Labels, title, and caption
   labs(y = "Ice duration (days)", x = "Year",
        title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019",
        caption = "The duration of ice cover (in days) at Lakes Mendota and\nMonona steadily decreased between the years 1851 and 2019") 
