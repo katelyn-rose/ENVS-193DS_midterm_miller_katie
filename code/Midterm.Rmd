@@ -20,45 +20,59 @@ require(AICcmodavg)
 library(tidyverse)
 library(here)
 library(NatParksPalettes)
+library(wesanderson)
 library(lterdatasampler)
 ```
 
 ## Problem 1
 
-a.  Ho = the mean phosphorus content in the burned and unburned sites is not significantly different. Ha = there is a significant difference between mean phosphorus content in the soil of the burned and unburned sites.
+a.  Biological: 
+Ho = the phosphorus contents in the soils at the burned and unburned sites are equal. 
+Ha = the soil of the burned and unburned sites do not have the same phosphorus content.
+Statistical:
+Ho = there is no significant difference in the mean phosphorus between the data sets.
+Ha = there is a significant difference in the mean phosphorus between the data sets.
 
-b.  t-test to determine if the mean of the two areas is significantly different.
+b. A t-test can be used to determine if the mean of the two areas is significantly different.
 
-c.  To perform a successful student's t-test, we assume that the data sets are evenly distributed and have an equal variance.
+c. To perform a successful student's t-test, we assume that the data sets are evenly distributed and have an equal variance.
 
-d.  if the data sets had an unequal variance we could perform a Welch's t-test.
+d. If the data sets had an unequal variance we could perform a Welch's t-test.
 
-e.  Because the p-value is less than 0.05, we can reject the null hypothesis that there is no difference in phosphorus content between the burned and unburned sites. 
+e. The null hypothesis was that there is no difference in phosphorus content between the burned and unburned sites. 34 soil samples were collected and there was found to be a significant difference in phosphorus content between burned and unburned sites (two-sample
+two-tailed t-test, t(66) = 2.5, ⍺ = 0.05, p = 0.014)
 
-f.  Ho = the mean phosphorus content of the soil before and after the fire is not significantly different. 
-Ha = the mean phosphorus content of the soil is unchanged before and after the fires. 
+f. Ho = the mean phosphorus content in the soil is equal before and after the fire.
+Ha = there is a difference in soil phosphorous content before and after the fire.
 
-g. I would preform a t-test to compare the mean phosphorus content of the soil before and after the fire in each survey site. 
+g. I would preform a t-test to compare the mean phosphorus content of the soil before and after the fire in each survey site in order to determine if there is a significant difference in the means. 
 
 ## Problem 2
 
-
 a. Roads may hinder pollinator movement and limit pollination of plants across and along roads. 
 In this study, a fluorescent pigment is used as an analogue for pollen to track the visitation of flowers by pollinators.
-A II
+Generally, flowers across a road or bike path are less likely to be visited by pollinators than flowers across a road or bike path. The pedestrian path seemed to have little effect on the rate of pollination.
 Habitat corridors could help pollinators cross roads and bike paths to reach flowers. Promoting alternative methods of transportation and reducing the number of cars on the road could also reduce pollinator deaths by collision and allow for safer road crossings.
 
 b.
+
 ```{r}
-# reading in data, correct file paths
-roadcomp <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadcomp.csv", skip=1)
-sites <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadsite.csv")
-contig <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/contig.csv", colClasses = c(Site = "factor", type = "factor"))
-veg <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadveg.csv", skip=1, colClasses = c(mowed = "factor", flowers = "factor", seminatural = "factor", weed = "factor"))
+# reading in data with correct file paths
+sites <- read.csv(here("data", "roadsite.csv"))
+fvisits <- read.csv(here("data", "flower visits.csv"))
+roadcomp <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadcomp.csv", skip = 1)
+#contig <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/contig.csv", colClasses = c(Site = "factor", type = "factor"))
+veg <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadveg.csv",
+                skip=1, colClasses = c(mowed = "factor",
+                                       flowers = "factor",
+                                       seminatural = "factor", 
+                                       weed = "factor"))
 veg$lawn[is.na(veg$lawn)] <- 0
 veg$lawn <- as.factor(veg$lawn)
-fvisits <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/flower visits.csv")
+
 ```
+
+
 
 ```{r}
 roadcomp2 <- mutate(roadcomp, prop.pig.c =
@@ -94,8 +108,8 @@ f1a <- ggplot(c.prop.sum) +
   geom_point(aes(x = position, 
                  y = mean, 
                  color = position, 
-                 # changed point size to 5 to better resemble figure 1
-                 shape = position), size = 5) + 
+                 # changed point size to better resemble figure 1
+                 shape = position), size = 4) + 
   # Creating error bars for mean
   geom_errorbar(aes(ymin = mean-se, 
                     ymax = mean+se, 
@@ -103,8 +117,8 @@ f1a <- ggplot(c.prop.sum) +
                     color=position), width = 0.1, size = 1) + 
   # Theme and label aesthetics 
   theme_bw() + 
-  # Changed y axis text to size 1 to better resemble the figure
-  theme(axis.text = element_text(colour = "black",size=rel(1)),
+  # Change text to better resemble the figure 1
+  theme(axis.text = element_text(colour = "black",size=rel(0.7)),
         # removed the "across" and "along" labels from x axis
         axis.text.x = element_blank(),
         legend.position = "none") + 
@@ -126,15 +140,15 @@ f1b <- ggplot(c.prop.sum.bike) +
              position = position_jitter(width = 0.2)) + 
   # Plotting the mean point
   geom_point(aes(x=position, y = mean, color = position,
-                 # changed point size to 5 to better resemble figure 1
-                 shape = position), size = 5) + 
+                 # changed point size to better resemble figure 1
+                 shape = position), size = 4) + 
   # Creating error bars for mean
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, x = position, 
                     color = position), width = 0.1, size = 1) + 
   # Theme and label aesthetics 
   theme_bw() + 
-  # Changed y axis text to size 1 to better resemble the figure
-  theme(axis.text = element_text(colour = "black",size=rel(1)),
+  # Changed text to better resemble the figure 1
+  theme(axis.text = element_text(colour = "black",size=rel(0.7)),
         # removed the "across" and "along" labels from x axis
         axis.text.x = element_blank(),
         legend.position = "none") + 
@@ -159,8 +173,8 @@ f1c <- ggplot(c.prop.sum.path) +
              position = position_jitter(width = 0.2)) + 
   # Plotting the mean point
   geom_point(aes(x = position, y = mean,  color = position, 
-                 # changed point size to 5 to better resemble figure 1
-                 shape = position), size = 5) +
+                 # changed point size to better resemble figure 1
+                 shape = position), size = 4) +
   # Creating error bars for mean
   geom_errorbar(aes(ymin = mean-se, 
                     ymax = mean+se, 
@@ -168,9 +182,9 @@ f1c <- ggplot(c.prop.sum.path) +
                     color = position), width = 0.1, size = 1) + 
   # Theme and label aesthetics 
   theme_bw() + 
-  # Changed y axis text to size 1 to better resemble the figure
-  theme(axis.text = element_text(colour = "black",size=rel(1)), 
-        axis.title = element_text(size=rel(1.4), face = "bold"), 
+  # Changed text to better resemble the figure 1
+  theme(axis.text = element_text(colour = "black",size=rel(0.7)), 
+        axis.title = element_text(size=rel(0.7), face = "bold"), 
         plot.title = element_text(size = rel(0.5), face = "bold", 
                                   hjust = 0.5), 
         legend.position = "none") + 
@@ -182,30 +196,59 @@ f1c <- ggplot(c.prop.sum.path) +
 ```{r}
 # Creating graphs d and e
 
-
+# calculating mean, standard deviation, and standard error for figure 1d
 mi.prop.sum <- ddply(subset(road.m, number.of.lanes > 0.5), .(position), summarize,
                   mean = mean(prop.pig.mi),
                   sd = sd(prop.pig.mi),
                   se = sd(prop.pig.mi)/sqrt(length(position)))
 
+# creating the graph for figure 1d
 f1d <- ggplot(mi.prop.sum) + 
+  # Plotting underlying data
   geom_point(data = subset(road.m, number.of.lanes > 0), 
-             aes(x=position, y = prop.pig.mi, shape = position, 
-                 color = position), 
-             size = 3, alpha = 0.4, position =  position_jitter(width = 0.2)) +
-  geom_point(aes(x=position, y = mean, color=position, shape = position), size = 5) + 
-  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), 
+             aes(x=position, y = prop.pig.mi, shape = position, color = position),
+             size = 3, alpha = 0.4, position = position_jitter(width = 0.2)) +
+  # Plotting the mean point
+  geom_point(aes(x=position, y = mean, color=position, shape = position), size = 4) + 
+  # Creating error bars for mean
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, 
+                    x = position, color = position), 
                 width = 0.1, size = 1) + 
+  # Theme and label aesthetics
   theme_bw() + 
-  # change size to 1
-  theme(axis.text = element_text(colour = "black",size=rel(1)), axis.title = element_text(size=rel(1), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + labs(x="Position relative to road", y= NULL)
+  # change sizes of font, remove legend
+  theme(axis.text = element_text(colour = "black",size=rel(0.7)), 
+        axis.title = element_text(size=rel(0.7), face = "bold"), 
+        plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), 
+        legend.position = "none") + 
+  # Label for the x axis, couldn't figure out how to do it with annotation labels 
+  labs(x= "Position relative to road", y= NULL)
 
-
+# calculating mean, standard deviation, and standard error for figure 1e
 mi.prop.sum.bike <- ddply(subset(road.m, number.of.lanes == 0.5), .(position), summarize,
                   mean = mean(prop.pig.mi),
                   sd = sd(prop.pig.mi),
                   se = sd(prop.pig.mi)/sqrt(length(position)))
-f1e <- ggplot(mi.prop.sum.bike) + geom_point(data = subset(road.m, number.of.lanes == 0.5), aes(x=position, y = prop.pig.mi, shape = position, color = position), size = 3, alpha = 0.4, position = position_jitter(width = 0.4)) + geom_point(aes(x=position, y = mean, color=position, shape = position), size = 5) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), width = 0.1, size = 1) + theme_bw() + theme(axis.text = element_text(colour = "black",size=rel(1)), axis.title = element_text(size=rel(1), face = "bold"), plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), legend.position = "none") + 
+
+# creating the graph for figure 1d
+f1e <- ggplot(mi.prop.sum.bike) + 
+  # Plotting underlying data
+  geom_point(data = subset(road.m, number.of.lanes == 0.5), 
+             aes(x=position, y = prop.pig.mi, shape = position, color = position), 
+             size = 3, alpha = 0.4, 
+             position = position_jitter(width = 0.4)) + 
+  # Plotting the mean point
+  geom_point(aes(x = position, y = mean, color = position, 
+                 shape = position), size = 4) + 
+  # Creating error bars for mean
+  geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), 
+                width = 0.1, size = 1) + 
+  # Theme and label aesthetics
+  theme_bw() + 
+  theme(axis.text = element_text(colour = "black",size=rel(0.7)), 
+        axis.title = element_text(size=rel(0.7), face = "bold"), 
+        plot.title = element_text(size = rel(2), face = "bold", hjust = 0.5), 
+        legend.position = "none") + 
   labs(x= "Position relative\nto bike path", 
        y= NULL)
 
@@ -228,6 +271,7 @@ annotate_figure(figure_1, left = text_grob("Proportion of flowers with pigment",
 a.
 
 ```{r}
+# reading in data
 coyotes <- read.csv(here("data",
                          "sev220_coyotescatsurvey_20150618.csv"),
                     na = c(".", ".'"))
@@ -235,26 +279,33 @@ coyotes <- read.csv(here("data",
 
 
 ```{r}
+# cleaning data 
 coyotes_summary <- coyotes %>%
   mutate(Habitat_type = case_when(Habitat_type == "G" ~ "grassland",
                                   Habitat_type == "S" ~ "shrubland"))
 ```
 
 ```{r}
+# calculating the median by habitat type
 coyotes_median <- coyotes_summary %>% 
   group_by(Habitat_type) %>% 
   summarize(median_l = median(Length, na.rm = TRUE))
 ```
 
 ```{r}
+# creating the plot
 ggplot(data = coyotes_median, aes(x = Habitat_type, 
                                   y = median_l, 
                                   color = Habitat_type, 
                                   shape = Habitat_type)) +
-  geom_point(size = 3) +
+  # plotting the median point
+  geom_point(size = 3, na.rm = TRUE) +
+  # plotting the underlying data
   geom_jitter(data = coyotes_summary, aes(x = Habitat_type, y = Length),
-              alpha = 0.3) +
+              alpha = 0.3, na.rm = TRUE) +
+  # labels and title
   labs(x = "Habitat Type", y = "Median Scat Length", title = "Median length of coyote scat, grassland vs. shrubland") +
+  # changing theme and visuals
   theme_classic() +
   theme(legend.position = "none",
         text = element_text(family = "Times New Roman"))
@@ -268,7 +319,39 @@ library(naniar)
 gg_miss_var(coyotes)
 ```
 
-c.
+c. Using the Kruskal-Wallis test can help us determine if the median scat length is the same between the two habitat types. compare the median of two random data sets
+This test is the best choice because it  whether the medians of two data sets.
+
+d. Ho = There is no difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert
+Ha = There is a difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert
+
+e.
+
+```{r}
+# creating data frame for plot
+coyotes_test <- coyotes %>% 
+  mutate(Grassland = case_when(
+    Habitat_type == "G" ~ Length),
+    Scrubland = case_when(
+    Habitat_type == "S" ~ Length))
+```
+
+
+```{r}
+# checking if distributions are similar in shape
+ggplot(data = coyotes_summary, na.rm = TRUE) +
+  stat_qq(aes(sample = Length), na.rm = TRUE) +
+  stat_qq_line(aes(sample = Length), na.rm = TRUE, color = "red") +
+  facet_wrap(~ Habitat_type)
+```
+
+
+```{r}
+wilcox.test(coyotes_test$Grassland, coyotes_test$Scrubland)
+```
+
+f. The null hypothesis is that there is no significant difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert. The null hypothesis is accepted
+
 
 
 ## Problem 4
@@ -281,39 +364,61 @@ icecover <- ntl_icecover
 # ugly plot
 plot_1 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
   geom_jitter(na.rm = TRUE, ) +
-  labs(title = "Plot 1")
-  theme_bw() +
-  theme(axis.text.y = element_text(colour = "black",size = 1),
-        axis.title.x = element_text(colour = "black",size =  1),
-        plot.background = element_blank())
-                                   
-    
-  
- #  axis.title.x = "year",
-    #    axis.title.y = "ice duration",
-    #    plot.title = "graph 1",
-     #   plot.title.position = 0.5,
-     #   color = "black",
-      
+  labs(title = "Plot 1", y = "ice duration", x = "years") +
+  # built in theme
+  theme_gray() +
+  # change y axis label to size 10 and color dark grey
+  theme(axis.text.y = element_text(colour = "darkgrey", 
+                                   size = 10),
+        # change x axis label to size 10 and color dark grey
+        axis.text.x = element_text(colour = "darkgrey", 
+                                   size = 10),
+        # change y axis title to size 12 and color black
+        axis.title.y = element_text(colour = "black", 
+                                    size =  12),
+        # change x axis title to size 12 and color black
+        axis.title.x = element_text(colour = "black", 
+                                    size =  12),
+        # removing the legend  
+        legend.position = "none",
+        # changing the color and width of x axis tick marks
+        axis.ticks.x = element_line(color = "black", 
+                                    linewidth = 0.7),
+        # changing the length and direction of x axis tick marks
+        axis.ticks.length.x = unit(-.25, "cm"),
+        # changing the color and width of x axis tick marks
+        axis.ticks.y = element_line(color = "black", 
+                                    linewidth = 0.7), 
+        # changing the length and direction of x axis tick marks
+        axis.ticks.length.y = unit(.25, "cm"),
+        # changing y axis line color
+        axis.line.y = element_line(color = "black"),
+        # changing x axis line color
+        axis.line.x = element_line(color = "black"),
+        # changing the plot line color and line type
+        panel.grid = element_line(color = "darkgrey", 
+                                  linetype = 3),
+        # changing plot background color
+       plot.background = element_rect(fill = "white"))
 
-plot_1
+
+   plot_1
 
 ```
 
 b.
 ```{r}
-# pretty plot
+# prettier plot
 ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
   geom_jitter(na.rm = TRUE) +
   theme_minimal() +
-  scale_color_manual(values = natparks.pals("LakeNakuru", 2)) +
+  scale_color_manual(values = wes_palette("Royal1", 2)) +
   labs(y = "Ice duration (days)", x = "Year",
        title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019") +
   theme(legend.title = element_blank(),
         axis.title.x = element_text(colour = "black", size = 9),
         axis.title.y = element_text(colour = "black", size = 9),
         plot.title = element_text(size =  10))
-
 
 ```
 
