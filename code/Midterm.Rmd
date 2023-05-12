@@ -73,6 +73,7 @@ veg$lawn <- as.factor(veg$lawn)
 
 
 ```{r}
+# reorganizing the data for plots
 roadcomp2 <- mutate(roadcomp, prop.pig.c =
                   (c.vert.n.high.pigment + c.vert.n.low.pigment)/c.vert.n.flowers,
                     prop.pig.c.hi = c.vert.n.high.pigment/c.vert.n.flowers, 
