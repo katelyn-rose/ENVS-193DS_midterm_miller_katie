@@ -7,6 +7,7 @@ output: word_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+# load in packages
 require(broom)
 require(ggplot2)
 require(plyr)
@@ -63,7 +64,7 @@ fvisits <- read.csv(here("data", "flower visits.csv"))
 roadcomp <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadcomp.csv", skip = 1)
 #contig <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/contig.csv", colClasses = c(Site = "factor", type = "factor"))
 veg <- read.csv("~/git/ENVS-193DS_midterm_miller_katie/data/roadveg.csv",
-                skip=1, colClasses = c(mowed = "factor",
+                skip=1, colClasses = c(#mowed = "factor",
                                        flowers = "factor",
                                        seminatural = "factor", 
                                        weed = "factor"))
@@ -114,7 +115,7 @@ f1a <- ggplot(c.prop.sum) +
   geom_errorbar(aes(ymin = mean-se, 
                     ymax = mean+se, 
                     x = position,
-                    color=position), width = 0.1, size = 1) + 
+                    color=position), width = 0.1, linewidth = 1) + 
   # Theme and label aesthetics 
   theme_bw() + 
   # Change text to better resemble the figure 1
@@ -144,7 +145,7 @@ f1b <- ggplot(c.prop.sum.bike) +
                  shape = position), size = 4) + 
   # Creating error bars for mean
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, x = position, 
-                    color = position), width = 0.1, size = 1) + 
+                    color = position), width = 0.1, linewidth = 1) + 
   # Theme and label aesthetics 
   theme_bw() + 
   # Changed text to better resemble the figure 1
@@ -179,7 +180,7 @@ f1c <- ggplot(c.prop.sum.path) +
   geom_errorbar(aes(ymin = mean-se, 
                     ymax = mean+se, 
                     x = position, 
-                    color = position), width = 0.1, size = 1) + 
+                    color = position), width = 0.1, linewidth = 1) + 
   # Theme and label aesthetics 
   theme_bw() + 
   # Changed text to better resemble the figure 1
@@ -213,7 +214,7 @@ f1d <- ggplot(mi.prop.sum) +
   # Creating error bars for mean
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, 
                     x = position, color = position), 
-                width = 0.1, size = 1) + 
+                width = 0.1, linewidth = 1) + 
   # Theme and label aesthetics
   theme_bw() + 
   # change sizes of font, remove legend
@@ -242,7 +243,7 @@ f1e <- ggplot(mi.prop.sum.bike) +
                  shape = position), size = 4) + 
   # Creating error bars for mean
   geom_errorbar(aes(ymin=mean-se, ymax=mean+se, x=position, color=position), 
-                width = 0.1, size = 1) + 
+                width = 0.1, linewidth = 1) + 
   # Theme and label aesthetics
   theme_bw() + 
   theme(axis.text = element_text(colour = "black",size=rel(0.7)), 
@@ -314,21 +315,21 @@ ggplot(data = coyotes_median, aes(x = Habitat_type,
 
 b. 
 ```{r}
+# visualizing missing data in coyotes data set
 library(naniar)
 
 gg_miss_var(coyotes)
 ```
 
-c. Using the Kruskal-Wallis test can help us determine if the median scat length is the same between the two habitat types. compare the median of two random data sets
-This test is the best choice because it  whether the medians of two data sets.
+c. Using the Mann-Whitney U test can help us determine if the median scat length is the same between the two habitat types. Our grassland and shubland data sets are random samples with similar distributions, so this test should be accurate comparing the medians of the two data sets.
 
-d. Ho = There is no difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert
-Ha = There is a difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert
+d. Ho = There is no difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert.
+Ha = There is a difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert.
 
 e.
 
 ```{r}
-# creating data frame for plot
+# creating data frame for plot with new columns for habitat types
 coyotes_test <- coyotes %>% 
   mutate(Grassland = case_when(
     Habitat_type == "G" ~ Length),
@@ -347,23 +348,24 @@ ggplot(data = coyotes_summary, na.rm = TRUE) +
 
 
 ```{r}
+# Mann-Whitney U test 
 wilcox.test(coyotes_test$Grassland, coyotes_test$Scrubland)
 ```
 
-f. The null hypothesis is that there is no significant difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert. The null hypothesis is accepted
-
+f. The null hypothesis is that there is no significant difference in median coyote scat length between the grassland and shrubland sites in the Chihuahuan Desert. Statistical analysis of the data sets using Wilcoxon rank-sum test shows that there is not a significant difference in the scat length and the null hypothesis is accepted (W = 35154, p-value = 0.9486)
 
 
 ## Problem 4
 
 ```{r}
+# defining data set
 icecover <- ntl_icecover
 ```
 
 ```{r}
-# ugly plot
+# uglier plot
 plot_1 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
-  geom_jitter(na.rm = TRUE, ) +
+  geom_jitter(na.rm = TRUE) +
   labs(title = "Plot 1", y = "ice duration", x = "years") +
   # built in theme
   theme_gray() +
@@ -409,16 +411,20 @@ plot_1 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid
 b.
 ```{r}
 # prettier plot
-ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
+plot_2 <- ggplot(data = icecover, aes(x = year, y = ice_duration, color = lakeid)) +
   geom_jitter(na.rm = TRUE) +
+  # adding a fit line to show decrease over time
+  geom_smooth(method = "lm", se = FALSE, linewidth = 0.7, na.rm = TRUE) +
+  # theme and color
   theme_minimal() +
-  scale_color_manual(values = wes_palette("Royal1", 2)) +
-  labs(y = "Ice duration (days)", x = "Year",
-       title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019") +
   theme(legend.title = element_blank(),
         axis.title.x = element_text(colour = "black", size = 9),
         axis.title.y = element_text(colour = "black", size = 9),
-        plot.title = element_text(size =  10))
+        plot.title = element_text(size =  10)) +
+  scale_color_manual(values = natparks.pals("LakeNakuru", 2)) +
+  labs(y = "Ice duration (days)", x = "Year",
+       title = "Days of Ice Cover at Lake Mendota and Lake Monona, 1851 - 2019") 
 
+plot_2
 ```
 
